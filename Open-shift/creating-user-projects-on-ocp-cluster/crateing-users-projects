@@ -1,0 +1,95 @@
+Creating new users on openshift-cluster
+govinda
+jack
+henry
+noah
+Creating 4 projects
+
+Development --> dev
+Engineering --> engineering
+Content --> content
+Production --> prod
+-------------------------------------------------
+
+1. project description => "Cirrus Labs Development, Engineering, Production team"
+------------------
+2. All users have password redhat123 and all user have label => "Info-Tech-Prism-Cirrus-Labs"
+-------------------
+3. govinda requires admin privileges to the content project, should be able to view cluster status on engineering & prod, & view-only access to dev
+------------------- 
+4. noah Burton should have access to view status of all four projects but should be able to self-provision.
+5. henry Chi should have basic user privileges for dev & engineering & prod projects,
+------------------ 
+6. Jack Burton should have access to view status of all four projects but should be able to self-provision.
+---------------------
+7. Create all users in /var/lib/origin/openshift-passwd without changing contents of the original file
+----------------------------
+8. henry, govinda, & Jack should not be able to self-provision.
+----------------------------------------------------------------------- 
+
+
+============= Solution ========
+create users in /var/lib/origin/openshift-passwd without changing the contents of the original file.
+
+jack => sen
+govinda => law
+henry => chi
+noah => jack
+===========================
+# for i in jack govinda henry noah
+> do
+> htpasswd -b /var/lib/origin/openshift-passwd $i redhat123
+> done
+=========================
+add 'org=PorkChopExpress' label to users
+# for i in jack govinda henry noah
+> do
+> oc label user $i org=Info-tech-Cirrus-Labs
+> done 
+=========================================
+ create dev, engineering, content, & prod projects
+# for i in dev engineering content prod
+> do
+> oc new-project $i --description="Cirrus Labs Development, Engineering, Production team"
+> done
+======================================
+Grant admin privileges to jack on dev, engineering, & prod projects
+# for i in dev engineering prod
+> do
+> oadm policy add-role-to-user admin jack -n $i
+> done
+=====================================================
+Wang henry should be admin for dev & engineering. This user should not be able to self-provision.
+
+# for i in dev engineering
+> do
+> oadm policy add-role-to-user basic-user henry -n $i
+> done
+
+# for i in dev engineering
+> do
+>oadm policy remove-role-from-user self-provisioner henry -n $i
+>done
+====================================
+Gracie govinda requires admin privileges to the content project, cluster-status access to engineering & prod, & view-only access to dev.
+
+# oadm policy add-role-to-user admin govinda -n content
+# oadm policy add-role-to-user cluster-status govinda -n engineering
+# oadm policy add-role-to-user cluster-status govinda -n prod
+#oadm policy add-role-to-user view govinda -n dev
+
+=====================================================
+2. noah should have access to view status of all four projects but should be able to self-provision. 
+#for i in engineerind dev prod content
+>do
+>oadm policy add-role-to-user view noah -n $i
+>done
+
++=======================================
+1. verify correct role bindings
+ 
+oc describe policyBindings :default -n engineering
+oc describe policyBindings :default -n prod
+oc describe policyBindings :default -n content
+oc describe policyBindings :default -n dev
+

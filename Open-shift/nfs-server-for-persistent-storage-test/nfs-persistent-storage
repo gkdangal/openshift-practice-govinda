@@ -1,0 +1,30 @@
+This exercise can either be performed on the OpenShift master or on a separate server outside of your OpenShift environment.
+
+1. Log in to the server you plan to use for NFS.
+2. Create a directory named /var/tmp/share where only the user and group nfsnobody have any permissions.
+3. Under /etc/, create an exports file setting the location of your NFS directory.
+4. Export the folder so that the OpenShift node can access the storage. If using SELinux, make sure that SELinux permits usage of NFS on both the NFS server and OpenShift node1.
+5. Verify that node1 has access to the NFS by manually mounting the newly created folder on the /mnt directory.
+5. Unmount the NFS.
+
+----------------------------------
+1. Log in to the server you plan to use for NFS.
+$ ssh root@$SERVER-IP
+2. Create a directory named /var/tmp/share where only the user and group nfsnobody have any permissions.
+# mkdir -p /var/tmp/share
+# chown nfsnobody:nfsnobody /var/tmp/share
+# chmod 700 /var/tmp/share
+3. Under /etc/, create an exports file setting the location of your NFS directory.
+Create a new file under /etc/exports.d/$NAME with the following contents:
+
+/var/tmp/share *(rw,async,all_squash)
+4. Export the folder so that the OpenShift node can access the storage. If using SELinux, make sure that SELinux permits usage of NFS on both the NFS server and OpenShift node1.
+# exportfs -a
+If using SELinux:
+
+# setsebool virt_use_nfs 1
+5. Verify that node1 has access to the NFS by manually mounting the newly created folder on the /mnt directory.
+$ ssh root@$NODE-1-IP
+# mount -t nfs $NFS-SERVER-IP:/var/tmp/share /mnt
+Unmount the NFS.
+# umount /mnt

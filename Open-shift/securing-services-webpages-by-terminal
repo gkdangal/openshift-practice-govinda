@@ -1,0 +1,32 @@
+1. on this page i am going to implement how to secure the web page by terminal editing the route
+$ ssh -i <private key file> root@master-ip
+--------------
+# oc whoami
+-----
+# oc new-project secure
+# oc new-app centos/ruby-22-centos-https://github.com/openshift/ruby-ex.git
+------
+exposing services
+# oc expose srv ruby-ex
+------------------
+# oc get route > to view the route
+
+---------------
+To edit the route
+# oc edit route ruby-ex
+Go to spec section
+at host line
+
+host: ruby-ex-secure-ocp.master.example.com
+#add below host line
+tls:
+ termination:edge
+Save and exit
+-------------------
+# oc get route ruby-ex
+
+Now we will get webe page if you type https on your brouser
+
+ 
+
+

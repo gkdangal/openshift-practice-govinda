@@ -1,0 +1,29 @@
+1. Log in to your OpenShift cluster.
+2. Create a new project named greetings.
+3. Under the greetings project, launch a new pod using the docker.io/hello-openshift image
+4. Once the pod build completes, verify that you get a response of "Hello OpenShift" by using curl or elinks to access the IP.
+5. Find the name of the service associated with your pod. Using that name, create a route to the pod that is accessible from the public internet.
+------------------------------------------------------
+1. Log in to your OpenShift cluster.
+$ ssh root@$MASTER-IP 
+--or---
+$ oc login $MASTER-IP -u $USER -p $PASSWORD 
+# oc whoami
+--------------------------------
+2. Create a new project named greetings.
+# oc new-project greetings
+-------------------------------
+3. Under the greetings project, launch a new pod using the docker.io/hello-openshift image
+# oc new-app docker.io/hello-openshift
+---------------------
+4. Once the pod build completes, verify that you get a response of "Hello OpenShift" by using curl or elinks to access the IP.
+# oc describe pod | grep IP
+# curl $IPADDRESS
+----------------------------
+5. Find the name of the service associated with your pod. Using that name, create a route to the pod that is accessible from the public internet.
+
+# oc get svc  # the response should be "hello-openshift"
+# oc expose svc hello-openshift  # You should get a roue hostname with a format similar to, hello-openshift-greetings.$YOUR.$HOSTNAME.com
+-------------------------------
+
+

@@ -1,0 +1,83 @@
+Exercise: Install OpenShift Container Platform on Red Hat Enterprise Linux 7
+
+In this exercise, you'll go through the process of installing OpenShift Container Platform v3.5 on your workstation.
+
+To complete this exercise, you will need two KVM servers with the following minimum system resources:
+
+Master
+At least 4 GB RAM
+At least 2 vCPU
+40 GB root disk
+20 GB data disk
+Node1
+At least 2GB RAM
+At least 2 vCPU
+40 GB root disk
+20 GB data disk
+This exercise is written with the assumption that the workstation has been configured to use official Red Hat Enterprise Linux 7 repositories. Open source community versions of OpenShift can be installed in the same manner, but there may be slight cosmetic differences in the installer. Before installing OpenShift Container Platform, be sure that you have installed docker-1.12.6 and have run the docker-storage-setup utility on both the master and node1.
+
+Exercise
+Log in to the master via the terminal.
+Before installation, verify that both the master and node1 server have proper DNS resolution configured. 
+On the master, install all needed packages for the OCP v3.5 installation.
+On the master and node1, remove OpenShift exclusions from /etc/yum.conf.
+Install the OpenShift Container Platform using tools provided in the atomic-openshift-utils package. Installation will take 20-45 minutes depending on system resources.
+When the installation completes, re-add exclusions to /etc/yum.conf.
+Verify that all nodes and pods are in "Running/Ready" status.
+Verify that atomic-openshift-master and atomic-openshift-node are running on master server and that atomic-openshift-node is running on the node1 server.
+======================================================================
+
+1. Log in to the master via the terminal.
+
+2. Before installation, verify that both the master and node1 server have proper DNS resolution configured.
+[root@master ~]# host $(hostname)
+[root@node1 ~]# host $(hostname)
+3. On the master, install all needed packages for the OCP v3.5 installation.
+# yum -y install automic-openshift-docker-excluder automic-openshift-excluder atomic-openshift-utils bind-utils bridge utils git iptables-services net-tools wget
+-------------------------
+4. On the master and node1, remove OpenShift exclusions from /etc/yum.conf.
+[root@master ~]#  atomic-openshift-excluder unexclude
+[root@node1 ~]#  atomic-openshift-excluder unexclud
+-------------------
+5. nstall the OpenShift Container Platform using tools provided in the atomic-openshift-utils package. Installation will take 20-45 minutes depending on system resources.
+[root@master ~]#  atomic-openshift-installer install
+-----------------
+6. When the installation completes, re-add exclusions to /etc/yum.conf.
+[root@master ~]#  atomic-openshift-excluder exclude
+[root@node1 ~]#  atomic-openshift-excluder exclude
+---------------------------------
+7. Verify that all nodes and pods are in "Running"/"Ready" status
+[root@master ~]# oc get pods
+NAME                       READY     STATUS    RESTARTS   AGE
+docker-registry-1-fc7h9    1/1       Running   0          3m
+registry-console-1-5xmlv   1/1       Running   0          3m
+router-1-45xqw             1/1       Running   0          3m
+[root@master ~]# 
+[root@master ~]# oc get nodes
+NAME      STATUS                     AGE
+master    Ready,SchedulingDisabled   13m
+node1     Ready 
+----------------
+8. Verify that atomic-openshift-master and atomic-openshift-node are running on master server and that atomic-openshift-node is running on the node1 server.
+master
+
+[root@master ~]# systemctl status | grep openshift
+           │     └─38938 grep --color=auto openshift
+           ├─atomic-openshift-node.service
+             │ ├─33079 /usr/bin/openshift start node --config=/etc/origin/node/node-config.yaml --loglevel=2
+             ├─atomic-openshift-master.service
+             │ └─4765 /usr/bin/openshift start master --config=/etc/origin/master/master-config.yaml --loglevel=2 
+--------------
+node1, node2 ,....
+[root@node1 ~]# systemctl status | grep openshift
+             │     └─18197 grep --color=auto openshift
+             │ ├─15504 /usr/bin/openshift-router
+             ├─atomic-openshift-node.service
+             │ ├─14442 /usr/bin/openshift start node --config=/etc/origin/node/node-config.yaml --loglevel=2
+
+ 
+
+
+
+
+

@@ -1,0 +1,21 @@
+1.Write a PersistentVolume definition in .yml format with the following specifications:
+=> Name: ex280-data
+=> Capacity: 10Gi
+=> Access mode: Only accessible once
+=> Reclaim policy: retain
+=> Mount point: /var/tmp/share
+------------------------------------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ex280-data
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    path: /var/tmp/share
+    server: $NFS-SERVER-IP
+  persistentVolumeReclaimPolicy: Retain
+

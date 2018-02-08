@@ -1,0 +1,58 @@
+In this lab, we will practice configuring basic authentication using the htpasswd utility.
+
+Log in to the master node.
+If not already installed, install the httpd-tools package.
+Once the install completes, edit the master-config file to enable authentication using HTPasswd with credentials stored in /etc/origin/openshift-passwd. Save and close the file.
+Create the credential file under /etc/origin/openshift-passwd.
+Once the file is created, add a user with the name student and the password openshift using the htpasswd utility.
+Assure that the cluster recognizes the new user.
+Verify login either using the OC command-line client or by logging into the OpenShift web console as the newly-created student user.
+---------------------------------------------------------
+1. Log in to the master node. From Testing hosts
+$ ssh root@masterIP
+2. If not already installed, install the httpd-tools package
+# yum -y install httpd-tool
+3 Once the install completes, edit the master-config file to enable authentication using HTPasswd with credentials stored in /etc/origin/openshift-passwd. Save and close the file.
+On master node, under the oauthConfig section in file /etc/origin/master/master-config.yaml, replace the value kind: DenyAllPasswordIdentityProvider with kind: HTPasswdPasswordIdentityProvider, being mindful of indentation.
+------------
+# vim /etc/origin/master/master-config.yam
+oauthConfig:
+name: deny_all
+    provider:
+      apiVersion: v1
+      kind: HTPasswdPasswordIdentityProvider
+
+Being mindful of indentation, create a new file attribute either directly above OR directly below the previously edited kind attribute, pointing to /etc/origin/openshift-passwd, which is the file that will contain OpenShift authentication info.
+-------------------------------
+4. Create the credential file under /etc/origin/openshift-passwd
+# touch /etc/origin/openshift-passwd
+--------------------------
+5. # vim /etc/origin/master/master-config.yam
+oauthConfig:
+name: deny_all
+    provider:
+      apiVersion: v1
+      kind: HTPasswdPasswordIdentityProvider
+      file: /etc/origin/openshift-passwd
+6. Once the file is created, add a user with the name student and the password openshift using the htpasswd utility.
+# htpasswd -b /etc/origin/openshift-passwd student redhat123
+here student=> username
+     redhat123=> password for student user
+---------------------------------------------------
+7. Assure that the cluster recognizes the new user.
+On the master node, restart the atomic-openshift-master service:
+
+# systemctl restart automic-openshift-master.service
+---------------------------------------------------
+Verify login either using the OC command-line client or by logging into the OpenShift web console as the newly-created student user.
+
+Open a web browser window and navigate to https://master.example.com:8443. Since the master host uses a self-signed certificate, you will need to manually add an acception for your hostname in your browser settings. 
+
+Once the exception is added, you should be forwarded to the OpenShift Container Platform login page. Enter username student and password openshift.
+
+Once logged in, you should be presented with a "Welcome to OpenShift" greeting.
+------------------------------------
+
+
+
+ 

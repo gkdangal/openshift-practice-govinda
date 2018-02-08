@@ -1,0 +1,29 @@
+1. login to master
+$ ssh root@master ip
+# oc whoami
+---------------
+2. crate new project
+# oc new-project helloGovinda
+--------------------------
+3. copy the recomended command line and paste it 
+# oc new-app centos/ruby-22-centos-https://github.com/openshift/ruby-ex.git
+-----------------------
+4. See the built
+# oc get build
+== wait for complete ====
+----------------
+5. get services
+=> we can see the list of services
+---------------------------
+6. Exposing the services
+# oc expose srv ruby-ex
+-------------------
+7. to view newly created route
+# oc get route
+-------------------------
+8. open brouser on workstation and paste the recomended url from comand line
+=====================================================================
+
+
+
+

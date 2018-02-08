@@ -1,0 +1,63 @@
+1.Login to master node
+2. Under the dev project, launch a new application with the ruby-22-centos7 image, using the following template: https://github.com/openshift/ruby-ex.git
+3. Watch the build progress until it completes. 
+4. Once build completes, scale the app up to 3 pods. Once again, observe the build until it completes.
+
+login to master node
+ 
+
+ssh root@[MASTER_IP]
+
+ 
+
+create new app under dev project with ruby-22-centos7 image
+ 
+
+oc project dev
+
+oc new-app centos/ruby-22-centos7~https://github.com/openshift/ruby-ex.git
+
+ 
+
+ 
+
+Observe build progress
+ 
+
+watch oc get builds
+
+ 
+
+ 
+
+scale app up to 3 pods
+ 
+
+oc scale --replicas=3 dc ruby-ex
+
+ 
+
+verify scaling is complete
+ 
+
+oc get pods
+
+ 
+
+expected output:
+
+ 
+
+NAME              READY     STATUS      RESTARTS   AGE
+
+ruby-ex-1-1ppls   1/1       Running     0          24s
+
+ruby-ex-1-3q95z   1/1       Running     0          6m
+
+ruby-ex-1-4hqft   1/1       Running     0          24s
+
+ruby-ex-1-build   0/1       Completed   0          7m
+
+ 
+
+This completes the exercise.

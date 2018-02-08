@@ -1,0 +1,61 @@
+1. Log in to the OpenShift cluster.
+2. Create a 1Gi mount point, either on the master node or on a separate NFS-enabled server for use with a PersistentVolume.
+3. Create a new project named database.
+4. Write the PersistentVolume definition with the following specifications:
+=> Name: mongo-data
+Size: 1Gi
+=> Accessibility: can be shared with multiple pods
+=> Reclaim policy: recycle
+=> Under the database project, create the persistent volume with your definition.
+=> Under the database project, create a new MongoDB application using the MongoDB (Persistent) template available under the OpenShift project.
+=> After the application build completes, verify that the PersistentVolume is assigned to the MongoDB application.
+---------------------------------------------------------------
+1. Log in to the OpenShift cluster.
+$ ssh root@master-ip
+
+2. CrCreate a 1Gi mount point, either on the master node or on a separate NFS-enabled server for use with a PersistentVolume.
+# mkdir -p /home/data/persistent01
+# chown nfsnobody:nfsnobody /home/data/persistent01
+# chmod 700 /home/data/persistent01
+
+3. In /var/exports.d/persistentmoutn 
+/var/data/persistent01	*(rw,async,all_squash)
+ save and close file
+# exportfs -a
+
+4. create new project named "database"
+# oc new-project database
+
+4. Write the PersistentVolume definition with the following specifications:
+=> Name: mongo-data
+=> Size: 1Gi
+=> Accessibility: can be shared with multiple pods
+=> Reclaim policy: recycle
+
+Create a new mongo-data.yml file with the following contents:
+---
+apiVersion: v1 
+kind: Persistent
+metadata:
+  name: mongo-data
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    path: /home/data/persistanet01
+    server: SERVER_IP
+  persiatanetVolumeReclaimPolicy: Recycle
+-------------------
+5. Under the database project, create the persistent volume with your definition.
+
+# oc create -f mongo-data.yml
+
+6 Under the database project, create a new MongoDB application using the MongoDB (Persistent) template available under the OpenShift project.
+Create the applicatrion from the OpenShift web console under Add to Project -- Datastores -- MongoDB (Persistent).
+
+7.After the application build completes, verify that the PersistentVolume is assigned to the MongoDB application.
+# oc get pv
+
+

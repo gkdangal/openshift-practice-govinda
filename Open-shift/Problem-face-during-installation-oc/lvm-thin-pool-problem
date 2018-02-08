@@ -1,0 +1,34 @@
+When i tried to use storage for docker i got this problem
+
+root@ocmaster1 ~]# docker-storage-setup 
+ERROR: Found dos signature on device /dev/sdb at offset 0x1fe. Wipe signatures using wipefs or use WIPE_SIGNATURES=true and retry
+
+To resolve this Issue
+
+[root@ocmaster1 ~]# wipefs /dev/sdb
+
+offset               type
+----------------------------------------------------------------
+0x1fe                dos   [partition table]
+
+[root@ocmaster1 ~]# wipefs --all --force /dev/sdb
+
+/dev/sdb: 2 bytes were erased at offset 0x000001fe (dos): 55 aa
+/dev/sdb: calling ioclt to re-read partition table: Success
+
+[root@ocmaster1 ~]# docker-storage-setup 
+INFO: Device node /dev/sdb1 exists.
+/dev/sdb1: 2 bytes were erased at offset 0x000001fe (dos): 55 aa
+/dev/sdb1: calling ioclt to re-read partition table: Invalid argument
+  Physical volume "/dev/sdb1" successfully created.
+  Volume group "VolGroup00" successfully extended
+  Using default stripesize 64.00 KiB.
+  Rounding up size to full physical extent 64.00 MiB
+  Thin pool volume with chunk size 512.00 KiB can address at most 126.50 TiB of data.
+  Logical volume "docker-pool" created.
+  Logical volume VolGroup00/docker-pool changed.
+[root@ocmaster1 ~]# 
+
+Finally Reslove the issue.
+========================
+

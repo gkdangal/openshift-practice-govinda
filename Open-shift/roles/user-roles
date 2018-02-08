@@ -1,0 +1,47 @@
+In this exercise, we will review role bindings in our OCP cluster, then assign the admin role to the pinehead user.
+
+1. Log in to master node.
+2. Describe the default policy.
+3. View users and groups bound to roles.
+4. List current projects.
+5. View policies on the openshift project.
+6. Create the linuxacademy project.
+7. Add the admin role to the pinehead user in the linuxacademy project. 
+8. Grant cluster-admin privileges to the pinehead user.
+9. Remove the pinehead user from the linuxacademy namespace.
+
+1. Login in to master from your work-station
+
+$ ssh root@master-ip
+--------------------
+2 Describe the default policy
+# oc describe clusterPolicy default
+=> List all default cluster policy
+-----------------------------
+3. View users and groups bound to roles. 
+# oc describe clusterPolicyBindings :deafult
+----------------------------
+4. List all availabale projects
+# oc Get projects
+----------------------
+5. View policies on the "openshift" projects
+# oc describe clusterpolicyBindings :default -n openshift
+---------------------
+6. Create the linuxacademy projects
+# oc new-projects linuxacademy
+# oc new-project cirruslabs-dev
+
+7. add the admin role to the pinehead user in the linuxacademy projects
+# oc adm policy add-role-to-user admin pinehead -n linuxacademy
+-----------------------------------------------------
+8. Grant cluster-admin privileges to the pinehead user
+# oc adm policy add-cluster-role-to-user cluster-admin pinehead
+--------------------------------------
+9. Remove the pinehead user from the linuxacademy namespace
+# oc policy remove-user pinehead -n linuxacademy
+
+
+
+
+
+

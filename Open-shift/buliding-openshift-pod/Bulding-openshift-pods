@@ -1,0 +1,36 @@
+1. login to the OpenShift cluster.
+2. If the project does not yet exist, create the dev project.
+3. Under the dev project, launch a new application with the ruby-22-centos7 image, using the following template: https://github.com/openshift/ruby-ex.git
+4. Watch the build progress until it completes.
+5. Once build completes, scale the app up to 3 pods. Once again, observe the build until it completes.
+
+1. login to OpenShift cluster
+$ ssh root@[MASTER_IP]
+OR
+$ oc login -u $USER -p $PASSWORD
+------------------------
+2.If the dev project does not exist, create it now.
+oc new-project dev
+create new app under dev project with ruby-22-centos7 image
+$ oc new-app centos/ruby-22-centos7~https://github.com/openshift/ruby-ex.git
+------------------------------
+3. Observe build progress
+$ watch oc get builds
+=> wait until the finished the project
+---------------------
+4. scale app up to 3 pods
+$ oc scale --replicas=3 dc ruby-ex
+-------------------------------
+
+verify scaling is complete
+$ oc get pods
+expected output:
+NAME              READY     STATUS      RESTARTS   AGE
+
+ruby-ex-1-1ppls   1/1       Running     0          24s
+
+ruby-ex-1-3q95z   1/1       Running     0          6m
+---------------------------------------------------------
+ruby-ex-1-4hqft   1/1       Running     0          24s
+
+ruby-ex-1-build   0/1       Completed   0          7m
