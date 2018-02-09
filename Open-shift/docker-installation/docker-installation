@@ -8,7 +8,7 @@ $ ssh root@gkdangal1.mylabserver.com
 edit the following line
 OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/16 --log-driver=journald --signature-verification=false'
 4. If enabled, disable the LVM cluster feature
-$lvmconf --disable-cluster
+$ lvmconf --disable-cluster
 5. Edit docker-storage-setup to use storage mounted on /dev/[x]vdb, then complete the installation using the proper command-line tools.
 # vim /etc/sysconfig/docker-storage-setup
 remove all lines and add this
